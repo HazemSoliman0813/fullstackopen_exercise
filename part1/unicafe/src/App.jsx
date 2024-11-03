@@ -1,55 +1,58 @@
 import { useState } from 'react'
+import PropTypes from "prop-types";
 
-const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [all, setAll] = useState(0)
-  const [positive, setPositive] = useState(0)
-  const [average, setAverage] = useState(0)
 
-  const incrementGood = () => {
-    const newGood = good + 1;
-    setGood(newGood)
-    const newAll = (newGood + neutral + bad)
-    setAll(newAll)
-    setPositive(newGood / newAll)
-    setAverage(((newGood * 1) + (neutral * 0) + (bad * -1)) / newAll)
-  }
-  const incrementneutral = () => {
-    const newNeutral = neutral + 1
-    setNeutral(newNeutral)
-    const newAll = (good + newNeutral + bad)
-    setAll(newAll)
-    setPositive(good / newAll)
-    setAverage(((good * 1) + (newNeutral * 0) + (bad * -1)) / newAll)
-    
-  }
-  const incrementbad = () => {
-    const newBad = bad + 1
-    setBad(newBad)
-    const newAll = (good + neutral + newBad)
-    setAll(newAll)
-    setPositive(good / newAll)
-    setAverage(((good * 1) + (neutral * 0) + (newBad * -1)) / newAll)
-  }
-
-  return (
-    <div>
-      <h1>give feedback</h1>
-      <button onClick={incrementGood}>good</button>
-      <button onClick={incrementneutral}>neutral</button>
-      <button onClick={incrementbad}>bad</button>
-      <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive}%</p>
-    </div>
-  )
+const Statistics = ({good, bad, neutral}) => {
+    console.log(good);
+    console.log(good + bad + neutral);
+    if(good === 0 && bad === 0 && neutral === 0){
+        return (
+            <p>No feedback given</p>
+        )
+    } else {
+        return (
+            <>
+                <p>good: {good}</p>
+                <p>neutral: {neutral}</p>
+                <p>bad: {bad}</p>
+                <p>all: {good + bad + neutral}</p>
+                <p>positive: {(good / (good + bad + neutral)) * 100}</p>
+                <p>average: {(good - bad) / (good + bad + neutral)}%</p>
+            </>
+        )
+    }
 }
 
-export default App
+Statistics.propTypes = {
+    good: PropTypes.number.isRequired,
+};
+
+Statistics.propTypes = {
+    bad: PropTypes.number.isRequired,
+};
+
+Statistics.propTypes = {
+    neutral: PropTypes.number.isRequired,
+};
+
+const App = () => {
+    const [good, SetGood] = useState(0);
+    const [neutral, SetNeutral] = useState(0);
+    const [bad, SetBad] = useState(0);
+
+    const incrementGood = () => SetGood(good + 1);
+    const incrementNeutral = () => SetNeutral(neutral + 1);
+    const incrementBad = () => SetBad(bad + 1);
+
+    return (
+        <div>
+            <h1>give feedback</h1>
+            <button onClick={incrementGood}>good</button>
+            <button onClick={incrementNeutral}>neutral</button>
+            <button onClick={incrementBad}>bad</button>
+            <Statistics good={good} bad={bad} neutral={neutral} />
+        </div>
+    )
+}
+
+export default App;
